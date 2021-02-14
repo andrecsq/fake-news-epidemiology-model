@@ -2,35 +2,47 @@ from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
 
-# temporary values
-N = 1001  # initial population
-beta = 0.5  # infection rate
-gamma = 1. / 10  # recovery rate
+# temporary values for constants
+INITIAL_POPULATION: int = 2000  # initial population
+BETA: float = 0.5  # infection rate
+GAMMA: float = 1. / 10  # recovery rate
+
+INITIAL_INFECTED: int = 1
+INITIAL_SUSCEPTIBLE: int = INITIAL_POPULATION - INITIAL_INFECTED
+TIME_GRID = np.linspace(start=1, stop=100, num=100)
 
 
-# derivates in t
-def f(y, t):
-    S, I = y
-    d0 = (-beta * S * I / N) + (gamma * I)  # derivative of S(t)
-    d1 = (beta * S * I / N) - (gamma * I)  # derivative of I(t)
+def plot(system_condition):
+    susceptible, infected = system_condition
 
-    return [d0, d1]
+    plt.figure()
+    plt.plot(TIME_GRID, susceptible, "r", label="S(t)")
+    plt.plot(TIME_GRID, infected, 'b', label="I(t)")
+    plt.legend()
+    plt.show()
 
 
-# Initial values
-S_0 = 1000  # susceptible
-I_0 = 1  # infected
+# The SIS model differential equations.
+def derivative(system_condition, t) -> list[float]:
+    susceptible, infected = system_condition
+    susceptible_dif_derivative: float = (-BETA * susceptible * infected / INITIAL_POPULATION) + (
+            GAMMA * infected)  # derivative of S(t)
+    infected_dif_derivative: float = (BETA * susceptible * infected / INITIAL_POPULATION) - (
+            GAMMA * infected)  # derivative of I(t)
 
-y_0 = [S_0, I_0]
+    return [susceptible_dif_derivative, infected_dif_derivative]
 
-t = np.linspace(start=1, stop=100, num=100)
-y = odeint(f, y_0, t)
 
-S = y[:, 0]
-I = y[:, 1]
+def ode_solution():
+    initial_condition: list[int] = [INITIAL_SUSCEPTIBLE, INITIAL_INFECTED]
 
-plt.figure()
-plt.plot(t, S, "r", label="S(t)")
-plt.plot(t, I, 'b', label="I(t)")
-plt.legend()
-plt.show()
+    # Integrate the SIS equations over the time grid .
+    y = odeint(derivative, initial_condition, TIME_GRID)
+
+    susceptible = y[:, 0]
+    infected = y[:, 1]
+
+    return [susceptible, infected]
+
+
+plot(ode_solution())
