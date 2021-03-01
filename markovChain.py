@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import math
 
 beta = 0.5
-gama = 0.1
+gamma = 0.1
 epsilon = 0.01 #Usar epsilon ou não??
-n = 500
+n = 2000
 max_t = 50
 
 Q = np.zeros((n, n))
@@ -14,7 +14,7 @@ Q = np.zeros((n, n))
 for i in range(1, n):
   for j in range(n):
     b = beta*i*(n-i)/n
-    d = gama*i
+    d = gamma*i
     if j==i-1:
       Q[i,j]=d
     elif j==i+1:
@@ -46,6 +46,11 @@ susceptible=[n-i for i in history]
 
 plt.plot(times, history, 'r')
 plt.plot(times, susceptible, 'b')
+
+plt.figtext(0.85, 0.55, "Beta=%.2f" % (beta), ha="right")
+plt.figtext(0.85, 0.5, "Gamma=%.2f" % (gamma), ha="right")
+plt.figtext(0.85, 0.45, "População=%.2f" % (n), ha="right")
+plt.figtext(0.85, 0.4, "Tempo max=%.2f" % (max_t), ha="right")
 plt.show()
 
 ########################## Código não necessariamente usado ##########################
