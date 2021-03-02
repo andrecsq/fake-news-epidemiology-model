@@ -7,6 +7,9 @@ INITIAL_POPULATION: int = 2000  # initial population
 BETA: float = 0.5  # infection rate
 GAMMA: float = 1. / 10  # recovery rate
 
+MI_0: float = 0.2  # transmission of good news
+LAMBDA_1: float = 0  # exogenous infection rate
+
 INITIAL_INFECTED: int = 1
 INITIAL_SUSCEPTIBLE: int = INITIAL_POPULATION - INITIAL_INFECTED
 TIME_GRID = np.linspace(start=1, stop=100, num=100)
@@ -26,9 +29,11 @@ def plot(system_condition):
 def derivative(system_condition, t) -> list[float]:
     susceptible, infected = system_condition
     susceptible_dif_derivative: float = (-BETA * susceptible * infected / INITIAL_POPULATION) + (
-            GAMMA * infected)  # derivative of S(t)
+            GAMMA * infected) + (MI_0 * susceptible * infected / INITIAL_POPULATION) - (
+                                                LAMBDA_1 * susceptible)  # derivative of S(t)
     infected_dif_derivative: float = (BETA * susceptible * infected / INITIAL_POPULATION) - (
-            GAMMA * infected)  # derivative of I(t)
+            GAMMA * infected) - (MI_0 * susceptible * infected / INITIAL_POPULATION) + (
+                                             LAMBDA_1 * susceptible)  # derivative of I(t)
 
     return [susceptible_dif_derivative, infected_dif_derivative]
 
