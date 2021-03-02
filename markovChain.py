@@ -11,10 +11,10 @@ n = 150
 max_t = 50
 initial_infected = 10
 
-Q = np.zeros((n, n))
+Q = np.zeros([n+1, n+1])
 
-for i in range(1, n):
-  for j in range(n):
+for i in range(n+1):
+  for j in range(n+1):
     b = beta*i*(n-i)/n + epsilon*(n-i)
     d = gamma*i        + alpha*(n-i)*i/n
     if j==i-1:
@@ -22,10 +22,10 @@ for i in range(1, n):
     elif j==i+1:
       Q[i,j]=b
 
-for i in range(1, n):
+for i in range(n+1):
   Q[i,i] = -sum(Q[i,:])
 
-def meanLoop(Q, max_t, n, t=1, infected=1, history=[], times=[]):
+def meanLoop(Q, max_t, n, t=0, infected=1, history=[], times=[]):
   history.append(infected)
   times.append(t)
   if t>=max_t:
@@ -36,14 +36,15 @@ def meanLoop(Q, max_t, n, t=1, infected=1, history=[], times=[]):
 
   # E(X_t|X_{t-1}=i) = sum{ j*P(X_t=j|X_{t-1}=i) }
   # Aqui, arrendondamos o número atual de infectados (i) porque não existe uma pessoal parcialmente infectada
-  terms = [j * P[round(infected),j] for j in range(n)]
+  terms = [j * P[round(infected),j] for j in range(n+1)]
   expected_value = sum(terms)
+
   # Usamos o valor esperado calculado para calcular para t+1
   return meanLoop(Q, max_t, n, t+1, expected_value, history, times)
 
 (history, times) = meanLoop(Q, max_t, n, t=1, infected=initial_infected, history=[])
 
-print(history)
+#print(history)
 susceptible=[n-i for i in history]
 
 plt.plot(times, history, 'r', label='infected')
