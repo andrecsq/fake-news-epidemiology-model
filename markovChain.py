@@ -3,18 +3,19 @@ from scipy.linalg import expm
 import matplotlib.pyplot as plt
 import math
 
-beta = 0.5
-gamma = 0.1
-epsilon = 0.01 #Usar epsilon ou não??
-n = 2000
-max_t = 50
+beta = 0.05
+gamma = 0.02
+epsilon = 0
+alpha = 0
+n = 1000
+max_t = 100
 
 Q = np.zeros((n, n))
 
 for i in range(1, n):
   for j in range(n):
-    b = beta*i*(n-i)/n
-    d = gamma*i
+    b = beta*i*(n-i)/n + epsilon*(n-i)
+    d = gamma*i        + alpha*(n-i)*i/n
     if j==i-1:
       Q[i,j]=d
     elif j==i+1:
@@ -33,8 +34,8 @@ def meanLoop(Q, max_t, n, t=1, infected=1, history=[], times=[]):
   P = expm(t*Q)
 
   # E(X_t|X_{t-1}=i) = sum{ j*P(X_t=j|X_{t-1}=i) }
-  # Aqui, arrendondamos para baixo o número atual de infectados (i) porque não existe uma pessoal parcialmente infectada
-  terms = [j * P[math.floor(infected),j] for j in range(n)]
+  # Aqui, arrendondamos o número atual de infectados (i) porque não existe uma pessoal parcialmente infectada
+  terms = [j * P[round(infected),j] for j in range(n)]
   expected_value = sum(terms)
   # Usamos o valor esperado calculado para calcular para t+1
   return meanLoop(Q, max_t, n, t+1, expected_value, history, times)
