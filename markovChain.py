@@ -3,12 +3,13 @@ from scipy.linalg import expm
 import matplotlib.pyplot as plt
 import math
 
-beta = 0.05
-gamma = 0.02
+beta = 0.5
+gamma = 0.1
 epsilon = 0
 alpha = 0
-n = 1000
-max_t = 100
+n = 150
+max_t = 50
+initial_infected = 10
 
 Q = np.zeros((n, n))
 
@@ -40,18 +41,19 @@ def meanLoop(Q, max_t, n, t=1, infected=1, history=[], times=[]):
   # Usamos o valor esperado calculado para calcular para t+1
   return meanLoop(Q, max_t, n, t+1, expected_value, history, times)
 
-(history, times) = meanLoop(Q, max_t, n, t=1, infected=1, history=[])
+(history, times) = meanLoop(Q, max_t, n, t=1, infected=initial_infected, history=[])
 
 print(history)
 susceptible=[n-i for i in history]
 
-plt.plot(times, history, 'r')
-plt.plot(times, susceptible, 'b')
+plt.plot(times, history, 'r', label='infected')
+plt.plot(times, susceptible, 'b', label='susceptible')
+plt.legend()
 
 plt.figtext(0.85, 0.55, "Beta=%.2f" % (beta), ha="right")
 plt.figtext(0.85, 0.5, "Gamma=%.2f" % (gamma), ha="right")
-plt.figtext(0.85, 0.45, "População=%.2f" % (n), ha="right")
-plt.figtext(0.85, 0.4, "Tempo max=%.2f" % (max_t), ha="right")
+plt.figtext(0.85, 0.45, "População=%d" % (n), ha="right")
+plt.figtext(0.85, 0.4, "Infectados inicial=%d" % (initial_infected), ha="right")
 plt.show()
 
 ########################## Código não necessariamente usado ##########################
