@@ -36,7 +36,7 @@ def meanLoop(Q, max_t, n, t=0, initial_infected=1, infected=1, history=[], times
   # A função de transição P(t) é usada para calcular o valor esperado de X_t
   P = expm(t*Q)
 
-  # E(X_t|X_{t-1}=i) = sum{ j*P(X_t=j|X_{t-1}=i) }
+  # E(X_t|X_0=I_0) = sum{ j*P(X_t=j|X_0=I_0) }
   # Aqui, arrendondamos o número atual de infectados (i) porque não existe uma pessoal parcialmente infectada
   terms = [j * P[initial_infected,j] for j in range(n+1)]
   expected_value = sum(terms)
@@ -59,7 +59,7 @@ plt.figtext(0.85, 0.45, "População=%d" % (n), ha="right")
 plt.figtext(0.85, 0.4, "Infectados inicial=%d" % (initial_infected), ha="right")
 plt.show()
 
-########################## Código não necessariamente usado ##########################
+############################## Código não usado ##############################
 
 def diagonalized(Q, t):
   (eigenvalues, S) = np.linalg.eig(Q)
@@ -78,11 +78,3 @@ def simulate(Q, max_t, n, t=1, infected=1, history=[]):
   P = expm(t*Q)
   new_infected = np.random.choice(range(n), p=P[infected,:])
   return simulate(Q, max_t, n, t+1, new_infected, history)
-
-#history=simulate(Q, max_t, n, t=1, infected=1, history=[])
-#print(history)
-#susceptible=[n-i for i in history]
-
-#plt.plot(range(1,max_t+1), history, 'r')
-#plt.plot(range(1,max_t+1), susceptible, 'b')
-#plt.show()
