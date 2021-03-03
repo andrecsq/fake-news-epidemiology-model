@@ -16,3 +16,5 @@ O arquivo ***Geração_Gráficos_Sobrepostos.ipynb*** contém os 3 métodos para
 O notebook ***implementacao_markov.ipynb*** contém a implementação por Cadeia de Markov.
 
 O notebook ***implementacao_edo.ipynb*** contém a implementação por EDO.
+
+O notebook ***simulacao_final.ipynb*** contém a nossa implementação mais recente de simulação
