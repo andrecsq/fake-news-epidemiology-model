@@ -2,6 +2,9 @@ import numpy as np
 from scipy.linalg import expm
 import matplotlib.pyplot as plt
 import math
+import sys
+
+sys.setrecursionlimit(10000)
 
 beta = 0.5
 gamma = 0.1
@@ -25,7 +28,7 @@ for i in range(n+1):
 for i in range(n+1):
   Q[i,i] = -sum(Q[i,:])
 
-def meanLoop(Q, max_t, n, t=0, infected=1, history=[], times=[]):
+def meanLoop(Q, max_t, n, t=0, initial_infected=1, infected=1, history=[], times=[]):
   history.append(infected)
   times.append(t)
   if t>=max_t:
@@ -36,15 +39,15 @@ def meanLoop(Q, max_t, n, t=0, infected=1, history=[], times=[]):
 
   # E(X_t|X_{t-1}=i) = sum{ j*P(X_t=j|X_{t-1}=i) }
   # Aqui, arrendondamos o número atual de infectados (i) porque não existe uma pessoal parcialmente infectada
-  terms = [j * P[round(infected),j] for j in range(n+1)]
+  terms = [j * P[initial_infected,j] for j in range(n+1)]
   expected_value = sum(terms)
 
   # Usamos o valor esperado calculado para calcular para t+1
-  return meanLoop(Q, max_t, n, t+1, expected_value, history, times)
+  return meanLoop(Q, max_t, n, t+1, initial_infected, expected_value, history, times)
 
-(history, times) = meanLoop(Q, max_t, n, t=1, infected=initial_infected, history=[])
+(history, times) = meanLoop(Q, max_t, n, t=1, initial_infected=initial_infected, infected=initial_infected, history=[])
 
-#print(history)
+print(history)
 susceptible=[n-i for i in history]
 
 plt.plot(times, history, 'r', label='infected')
