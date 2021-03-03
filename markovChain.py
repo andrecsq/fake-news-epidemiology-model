@@ -3,7 +3,6 @@ from scipy.linalg import expm
 import matplotlib.pyplot as plt
 import math
 import sys
-
 sys.setrecursionlimit(10000)
 
 beta = 0.5
