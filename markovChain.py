@@ -37,7 +37,6 @@ def meanLoop(Q, max_t, n, t=0, initial_infected=1, infected=1, history=[], times
   P = expm(t*Q)
 
   # E(X_t|X_0=I_0) = sum{ j*P(X_t=j|X_0=I_0) }
-  # Aqui, arrendondamos o número atual de infectados (i) porque não existe uma pessoal parcialmente infectada
   terms = [j * P[initial_infected,j] for j in range(n+1)]
   expected_value = sum(terms)
 
